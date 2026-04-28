@@ -16,7 +16,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 10px;
       }
 
       #root {
@@ -29,40 +29,53 @@
         border-radius: 12px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
       }
 
       .chat-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 30px;
+        padding: 20px;
         text-align: center;
+        flex-shrink: 0;
       }
 
       .chat-header h1 {
-        font-size: 28px;
-        margin: 0 0 8px 0;
+        font-size: 24px;
+        margin: 0 0 4px 0;
       }
 
       .chat-header p {
-        font-size: 14px;
+        font-size: 12px;
         opacity: 0.9;
         margin: 0;
+      }
+
+      .chat-body {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        overflow: hidden;
+        flex: 1;
+        min-height: 0;
       }
 
       .messages-container {
         background: #f5f5f5;
         border-radius: 8px;
-        padding: 15px;
-        min-height: 300px;
-        max-height: 400px;
+        padding: 12px;
         overflow-y: auto;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        flex: 1;
+        min-height: 200px;
       }
 
       .message-item {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         display: flex;
-        gap: 10px;
+        gap: 8px;
       }
 
       .message-item.user {
@@ -70,10 +83,12 @@
       }
 
       .message-bubble {
-        max-width: 70%;
-        padding: 10px 12px;
+        max-width: 80%;
+        padding: 8px 10px;
         border-radius: 6px;
         word-wrap: break-word;
+        font-size: 14px;
+        line-height: 1.4;
       }
 
       .message-bubble.user {
@@ -93,13 +108,182 @@
       }
 
       .message-role-badge {
-        font-size: 11px;
-        margin-bottom: 4px;
+        font-size: 10px;
+        margin-bottom: 3px;
       }
 
       .delete-btn {
-        align-self: flex-end;
-        margin-top: 8px;
+        font-size: 12px;
+        padding: 2px 6px;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .input-group select {
+        flex: 0 0 auto;
+        min-width: 80px;
+        font-size: 14px;
+      }
+
+      .input-group textarea {
+        flex: 1;
+        font-size: 14px;
+        min-height: 80px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .button-group button {
+        flex: 1;
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .send-button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      /* 平板优化 */
+      @media (min-width: 576px) {
+        body {
+          padding: 20px;
+        }
+
+        .chat-header {
+          padding: 25px;
+        }
+
+        .chat-header h1 {
+          font-size: 26px;
+          margin: 0 0 6px 0;
+        }
+
+        .chat-header p {
+          font-size: 13px;
+        }
+
+        .chat-body {
+          padding: 20px;
+        }
+
+        .messages-container {
+          padding: 15px;
+          min-height: 300px;
+          margin-bottom: 20px;
+        }
+
+        .message-bubble {
+          max-width: 70%;
+          padding: 10px 12px;
+          font-size: 15px;
+        }
+
+        .input-group textarea {
+          min-height: 100px;
+        }
+
+        .button-group {
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+
+        .button-group button {
+          font-size: 15px;
+          padding: 10px 14px;
+        }
+
+        .send-button {
+          font-size: 15px;
+          padding: 12px;
+        }
+      }
+
+      /* 桌面优化 */
+      @media (min-width: 768px) {
+        body {
+          padding: 20px;
+        }
+
+        .chat-container {
+          max-height: none;
+        }
+
+        .chat-header {
+          padding: 30px;
+        }
+
+        .chat-header h1 {
+          font-size: 28px;
+          margin: 0 0 8px 0;
+        }
+
+        .chat-header p {
+          font-size: 14px;
+        }
+
+        .chat-body {
+          padding: 30px;
+          max-height: none;
+        }
+
+        .messages-container {
+          padding: 15px;
+          min-height: 300px;
+          max-height: 400px;
+          margin-bottom: 20px;
+        }
+
+        .message-bubble {
+          max-width: 70%;
+          padding: 10px 12px;
+          font-size: 15px;
+        }
+
+        .input-group {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+
+        .input-group select {
+          min-width: 120px;
+        }
+
+        .input-group textarea {
+          min-height: 120px;
+        }
+
+        .button-group {
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+
+        .button-group button {
+          font-size: 16px;
+          padding: 10px 20px;
+        }
+
+        .send-button {
+          font-size: 16px;
+          padding: 12px 20px;
+        }
+      }
+
+      /* 超大屏 */
+      @media (min-width: 992px) {
+        .messages-container {
+          max-height: 500px;
+        }
       }
     </style>
   </head>
@@ -247,10 +431,9 @@
               <p>OpenAI Messages API Test Interface</p>
             </div>
 
-            <div className="p-4">
+            <div className="chat-body">
               {/* Messages Display */}
-              <div className="mb-4">
-                <h5 className="mb-3">Chat Messages</h5>
+              <div>
                 <div className="messages-container" ref={messagesContainerRef}>
                   {messages.length === 0 ? (
                     <div className="text-center text-muted py-5">
@@ -275,7 +458,7 @@
                               style={{
                                 whiteSpace: 'pre-wrap',
                                 wordBreak: 'break-word',
-                                marginBottom: '8px',
+                                marginBottom: '6px',
                               }}
                             >
                               {msg.content}
@@ -294,18 +477,14 @@
                 </div>
               </div>
 
-              <hr />
-
               {/* Input Section */}
-              <div className="mb-4">
-                <h5 className="mb-3">Send Message</h5>
-
-                <div className="input-group mb-3">
+              <div>
+                <div className="input-group">
                   <select
                     className="form-select"
-                    style={{ maxWidth: '120px' }}
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
+                    disabled={loading}
                   >
                     <option value="user">User</option>
                     <option value="assistant">Assistant</option>
@@ -314,7 +493,6 @@
 
                   <textarea
                     className="form-control"
-                    rows="4"
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder="Enter your message here..."
@@ -322,25 +500,25 @@
                   ></textarea>
                 </div>
 
-                <div className="d-flex gap-2 mb-3">
+                <div className="button-group">
                   <button
                     className="btn btn-primary"
                     onClick={handleAddMessage}
                     disabled={loading}
                   >
-                    Add Message
+                    Add
                   </button>
                   <button
                     className="btn btn-outline-secondary"
                     onClick={handleClearMessages}
                     disabled={loading}
                   >
-                    Clear All
+                    Clear
                   </button>
                 </div>
 
                 <button
-                  className="btn btn-primary w-100"
+                  className="btn btn-primary send-button"
                   onClick={handleSendChat}
                   disabled={loading || messages.length === 0}
                 >
