@@ -1,15 +1,18 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import OpenAI from 'openai';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  // 从请求中获取文本参数，并传递给 appService.chat 方法
+  @Post('chat')
   async chat(
-    @Query('text') text: string = 'Hello World',
+    @Body()
+    body: {
+      messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
+    },
   ): Promise<string | null> {
-    return this.appService.chat(text);
+    return this.appService.chat(body.messages);
   }
 }
