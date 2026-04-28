@@ -554,24 +554,6 @@
           }, 3000);
         };
 
-        // Add message
-        const handleAddMessage = () => {
-          if (!messageInput.trim()) {
-            showToast('Please enter a message', 'danger');
-            return;
-          }
-
-          setMessages([
-            ...messages,
-            {
-              role: selectedRole,
-              content: messageInput,
-            },
-          ]);
-          setMessageInput('');
-          showToast(`Message added as ${selectedRole}`, 'success');
-        };
-
         // Delete message
         const handleDeleteMessage = (index) => {
           const newMessages = messages.filter((_, i) => i !== index);
@@ -579,21 +561,32 @@
           showToast('Message deleted', 'info');
         };
 
-        // Clear all messages
-        const handleClearMessages = () => {
-          if (window.confirm('Are you sure you want to clear all messages?')) {
-            setMessages([]);
-            showToast('All messages cleared', 'success');
-          }
-        };
-
-        // Send chat request
-        const handleSendChat = async () => {
-          if (messages.length === 0) {
-            showToast('Please add at least one message', 'danger');
+        // Send and Add Message (integrated)
+        const handleSendAndAddMessage = async (e) => {
+          if (e && e.type === 'keydown' && !(e.ctrlKey || e.metaKey)) {
             return;
           }
 
+          let updatedMessages = messages;
+
+          // If there's input, add it first
+          if (messageInput.trim()) {
+            const newMessage = {
+              role: selectedRole,
+              content: messageInput,
+            };
+            updatedMessages = [...messages, newMessage];
+            setMessages(updatedMessages);
+            setMessageInput('');
+          }
+
+          // Check if there are messages to send
+          if (updatedMessages.length === 0) {
+            showToast('Please enter a message', 'danger');
+            return;
+          }
+
+          // Send chat request
           setLoading(true);
           try {
             const response = await fetch('/chat', {
@@ -601,7 +594,7 @@
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ messages }),
+              body: JSON.stringify({ messages: updatedMessages }),
             });
 
             if (!response.ok) {
@@ -709,32 +702,23 @@
                     className="form-control"
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
-                    placeholder="Enter your message here..."
+                    onKeyDown={(e) => {
+                      if (e.ctrlKey || e.metaKey) {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleSendAndAddMessage(e);
+                        }
+                      }
+                    }}
+                    placeholder="Enter your message here (Ctrl+Enter or Cmd+Enter to send)..."
                     disabled={loading}
                   ></textarea>
                 </div>
 
-                <div className="button-group">
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleAddMessage}
-                    disabled={loading}
-                  >
-                    Add
-                  </button>
-                  <button
-                    className="btn btn-outline-secondary"
-                    onClick={handleClearMessages}
-                    disabled={loading}
-                  >
-                    Clear
-                  </button>
-                </div>
-
                 <button
-                  className="btn btn-primary send-button"
-                  onClick={handleSendChat}
-                  disabled={loading || messages.length === 0}
+                  className="btn btn-primary send-button w-100"
+                  onClick={handleSendAndAddMessage}
+                  disabled={loading}
                 >
                   {loading ? (
                     <>
@@ -746,7 +730,7 @@
                       Sending...
                     </>
                   ) : (
-                    'Send to Chat'
+                    'Send'
                   )}
                 </button>
               </div>
