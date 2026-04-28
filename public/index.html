@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
@@ -21,7 +21,9 @@
         align-items: center;
         justify-content: center;
         padding: 12px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+          sans-serif;
         color: #000;
       }
 
@@ -33,7 +35,9 @@
       .chat-container {
         background: #ffffff;
         border-radius: 18px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+        box-shadow:
+          0 4px 6px rgba(0, 0, 0, 0.07),
+          0 1px 3px rgba(0, 0, 0, 0.06);
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -116,6 +120,7 @@
           opacity: 0;
           transform: translateY(8px);
         }
+
         to {
           opacity: 1;
           transform: translateY(0);
@@ -324,7 +329,8 @@
         cursor: not-allowed;
       }
 
-      .btn-primary, .btn-outline-secondary {
+      .btn-primary,
+      .btn-outline-secondary {
         border-radius: 10px !important;
         font-weight: 500 !important;
         transition: all 0.15s ease !important;
@@ -501,12 +507,19 @@
       }
     </style>
   </head>
+
   <body>
     <div id="root"></div>
 
     <!-- React -->
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-    <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"
+    ></script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -518,12 +531,7 @@
       const { useState, useEffect, useRef } = React;
 
       function ChatApp() {
-        const [messages, setMessages] = useState([
-          {
-            role: 'user',
-            content: 'Hello, how are you today?',
-          },
-        ]);
+        const [messages, setMessages] = useState([]);
         const [loading, setLoading] = useState(false);
         const [messageInput, setMessageInput] = useState('');
         const [selectedRole, setSelectedRole] = useState('user');
@@ -648,10 +656,7 @@
                     </div>
                   ) : (
                     messages.map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`message-item ${msg.role}`}
-                      >
+                      <div key={index} className={`message-item ${msg.role}`}>
                         <div style={{ width: '100%' }}>
                           <div className={`message-bubble ${msg.role}`}>
                             <div className="message-role-badge">
@@ -686,18 +691,45 @@
 
               {/* Input Section */}
               <div>
-                <div className="input-group">
-                  <select
-                    className="form-select"
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    disabled={loading}
-                  >
-                    <option value="user">User</option>
-                    <option value="assistant">Assistant</option>
-                    <option value="system">System</option>
-                  </select>
+                {/* Role Selection Button Group */}
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '8px',
+                    marginBottom: '12px',
+                    padding: '0 16px',
+                    paddingTop: '16px',
+                  }}
+                >
+                  {['user', 'assistant', 'system'].map((role) => (
+                    <button
+                      key={role}
+                      className={`btn ${
+                        selectedRole === role
+                          ? 'btn-primary'
+                          : 'btn-outline-secondary'
+                      }`}
+                      onClick={() => setSelectedRole(role)}
+                      disabled={loading}
+                      style={{
+                        flex: 1,
+                        textTransform: 'capitalize',
+                        fontSize: '14px',
+                        padding: '8px 12px',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                    </button>
+                  ))}
+                </div>
 
+                <div
+                  style={{
+                    padding: '0 16px',
+                    paddingBottom: '16px',
+                  }}
+                >
                   <textarea
                     className="form-control"
                     value={messageInput}
@@ -712,27 +744,44 @@
                     }}
                     placeholder="Enter your message here (Ctrl+Enter or Cmd+Enter to send)..."
                     disabled={loading}
+                    style={{
+                      borderRadius: '10px',
+                      borderColor: '#e5e7eb',
+                    }}
                   ></textarea>
                 </div>
 
-                <button
-                  className="btn btn-primary send-button w-100"
-                  onClick={handleSendAndAddMessage}
-                  disabled={loading}
+                <div
+                  style={{
+                    padding: '0 16px',
+                    paddingBottom: '16px',
+                  }}
                 >
-                  {loading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Sending...
-                    </>
-                  ) : (
-                    'Send'
-                  )}
-                </button>
+                  <button
+                    className="btn btn-primary send-button w-100"
+                    onClick={handleSendAndAddMessage}
+                    disabled={loading}
+                    style={{
+                      padding: '12px 20px',
+                      fontSize: '15px',
+                      borderRadius: '10px',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Sending...
+                      </>
+                    ) : (
+                      'Send'
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
