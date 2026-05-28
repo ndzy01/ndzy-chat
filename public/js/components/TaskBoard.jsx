@@ -22,6 +22,7 @@ window.TaskBoard = function TaskBoard() {
   const [showTenantSetting, setShowTenantSetting] = useState(false);
   const [customTenantInput, setCustomTenantInput] = useState('');
   const [tenantCopied, setTenantCopied] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // 点击外部关闭下拉
   useEffect(function () {
@@ -199,8 +200,11 @@ window.TaskBoard = function TaskBoard() {
 
   return (
     <div className="task-shell">
+      {/* 移动端侧边栏遮罩 */}
+      {sidebarOpen && <div className="sidebar-mobile-overlay" onClick={function () { setSidebarOpen(false); }}></div>}
+
       {/* 侧边栏 */}
-      <div className="task-sidebar">
+      <div className={'task-sidebar' + (sidebarOpen ? ' sidebar-open' : '')}>
         <div className="task-sidebar-header">
           <button className="new-task-btn" onClick={function () { setShowCreate(true); }}>
             + 新建任务
@@ -300,7 +304,20 @@ window.TaskBoard = function TaskBoard() {
       {/* 主区域 */}
       <div className="task-main">
         <div className="task-header">
-          <h1>🤖 AI 任务看板</h1>
+          {/* 移动端汉堡菜单 + 标题 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button className="hamburger-btn" onClick={function () { setSidebarOpen(!sidebarOpen); }} aria-label="菜单">
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </button>
+            <h1>🤖 AI 任务看板</h1>
+          </div>
+          <div className="quick-actions-row">
+            <button className="quick-action-btn quick-create" onClick={function () { setShowCreate(true); }}>+ 新建任务</button>
+            <button className="quick-action-btn quick-draft" onClick={function () { setAiPanel('draft'); }}>🧹 脑暴转任务</button>
+            <button className="quick-action-btn quick-recommend" onClick={function () { runAI(getRecommend); }} disabled={aiLoading}>🔮 智能推荐</button>
+          </div>
           <div className="task-header-row">
             <p>{statusLabel[filter] || '全部任务'}{' · '}{tasks.length} 项任务</p>
             <div className="date-picker-wrapper">
@@ -456,6 +473,40 @@ window.TaskBoard = function TaskBoard() {
                         {task.dueDate && <span className="due-date">🗓 {new Date(task.dueDate).toLocaleDateString()}</span>}
                         {/* 状态切换按钮 */}
                         <div style={{ position: 'relative', display: 'inline-block', marginLeft: '8px' }}>
+                          <button
+                            className="status-toggle-btn"
+                            onClick={function (e) {
+                              e.stopPropagation();
+                              e.nativeEvent.stopImmediatePropagation();
+                              setStatusDropdownId(isDropdownOpen ? null : task.id);
+                            }}
+                          >
+                            <span className={'status-dot status-' + task.status + ' status-dot-inline'}></span>
+                            {statusLabel[task.status] || task.status}
+                            <span className="status-toggle-arrow">▾</span>
+                          </button>
+                          {isDropdownOpen && (
+                            <div className="status-dropdown">
+                              {statusOptions.map(function (opt) {
+                                return (
+                                  <div
+                                    key={opt.value}
+                                    className={'status-dropdown-item' + (task.status === opt.value ? ' active' : '')}
+                                    onClick={function () {
+                                      handleStatusChange(task, opt.value);
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {/* 移动端：状态按钮在卡片操作区前面 */}
+                      <div className="task-card-meta-mobile">
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
                           <button
                             className="status-toggle-btn"
                             onClick={function (e) {

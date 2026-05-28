@@ -870,6 +870,11 @@ body {
   margin: 0;
 }
 
+/* Quick Action Buttons (desktop) */
+.quick-actions-row {
+  display: none;
+}
+
 .task-header-row {
   display: flex;
   align-items: center;
@@ -1273,4 +1278,262 @@ body {
 
 .task-action-btn:hover {
   background: rgba(0,0,0,0.06);
+}
+
+/* =======================================
+   MOBILE RESPONSIVE (max-width: 680px)
+   ======================================= */
+
+/* Hamburger Button */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.hamburger-btn:hover {
+  background: #f3f4f6;
+}
+
+.hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #374151;
+  border-radius: 1px;
+}
+
+/* Sidebar Mobile Overlay */
+.sidebar-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 90;
+}
+
+/* Mobile Meta (hidden on desktop) */
+.task-card-meta-mobile {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* Sidebar becomes off-screen overlay */
+  .task-shell {
+    position: relative;
+  }
+
+  .task-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+  }
+
+  .task-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-mobile-overlay {
+    display: block;
+  }
+
+  /* Main area full width */
+  .task-main {
+    width: 100%;
+  }
+
+  .task-header {
+    padding: 14px 16px;
+    padding-bottom: 8px;
+  }
+
+  .task-header h1 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .task-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .task-header-row p {
+    font-size: 12px;
+  }
+
+  .task-body {
+    padding: 12px 12px 80px 12px; /* bottom padding for mobile nav */
+  }
+
+  /* Quick Actions Row for Mobile */
+  .quick-actions-row {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 6px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .quick-action-btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.12s;
+  }
+
+  .quick-create {
+    background: #0084ff;
+    color: white;
+  }
+
+  .quick-draft {
+    background: #f0f7ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+  }
+
+  .quick-recommend {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+  }
+
+  .quick-action-btn:active {
+    transform: scale(0.96);
+  }
+
+  .quick-action-btn:disabled {
+    opacity: 0.5;
+  }
+
+  /* AI Panel vertical stacking */
+  .ai-panel {
+    flex-wrap: wrap;
+  }
+
+  .ai-panel > .ai-panel-input,
+  .ai-panel > .ai-panel-textarea {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .ai-panel-select {
+    flex: 1 1 80px;
+  }
+
+  .ai-panel-btn {
+    flex: 1 0 auto;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .ai-panel-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  /* Task card full width */
+  .task-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .task-card-title {
+    font-size: 14px;
+  }
+
+  .task-card-meta {
+    display: none; /* hide desktop meta row */
+  }
+
+  .task-card-meta-mobile {
+    display: flex;
+    margin-top: 8px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* Actions always visible on mobile */
+  .task-card-actions {
+    opacity: 1;
+    flex-direction: row;
+    gap: 6px;
+    margin-left: 6px;
+    margin-top: 0;
+  }
+
+  .task-action-btn {
+    opacity: 1;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    background: #f3f4f6;
+    border-radius: 6px;
+  }
+
+  /* Tenant section in sidebar */
+  .tenant-section {
+    padding: 10px 12px;
+  }
+
+  /* Filter items in sidebar */
+  .filter-item {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  /* Loading & empty states */
+  .task-empty {
+    padding: 32px 16px;
+  }
+
+  .task-loading {
+    padding: 32px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .task-card {
+    padding: 10px;
+  }
+
+  .task-card-title {
+    font-size: 13px;
+  }
+
+  .task-card-actions {
+    gap: 2px;
+  }
+
+  .task-action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
 }
