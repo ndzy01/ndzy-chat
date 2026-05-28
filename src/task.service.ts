@@ -16,7 +16,7 @@ export class TaskService {
     private subtaskRepo: Repository<Subtask>,
   ) {
     this.client = new OpenAI({
-      apiKey: process.env.apiKey,
+      apiKey: process.env.API_KEY,
       baseURL: 'https://api.deepseek.com',
     });
   }
