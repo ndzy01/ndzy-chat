@@ -19,6 +19,9 @@ window.TaskBoard = function TaskBoard() {
   const [countsData, setCountsData] = useState({ todo: 0, in_progress: 0, done: 0, total: 0 });
   const [statusDropdownId, setStatusDropdownId] = useState(null);
   const [subtaskLoading, setSubtaskLoading] = useState(null);
+  const [showTenantSetting, setShowTenantSetting] = useState(false);
+  const [customTenantInput, setCustomTenantInput] = useState('');
+  const [tenantCopied, setTenantCopied] = useState(false);
 
   // 点击外部关闭下拉
   useEffect(function () {
@@ -217,6 +220,72 @@ window.TaskBoard = function TaskBoard() {
             🟢 已完成 <span className="filter-count">{countsData.done}</span>
           </div>
         </div>
+        {/* 租户设置 */}
+        <div className="tenant-section">
+          <div className="ai-menu-title">🔑 租户 ID</div>
+          <div className="tenant-id-row">
+            <code className="tenant-id-code">{getTenantId().slice(0, 16)}...</code>
+            <button
+              className="tenant-copy-btn"
+              onClick={function () {
+                var textarea = document.createElement('textarea');
+                textarea.value = getTenantId();
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                setTenantCopied(true);
+                setTimeout(function () { setTenantCopied(false); }, 1500);
+              }}
+            >
+              {tenantCopied ? '✓ 已复制' : '📋 复制'}
+            </button>
+          </div>
+          {showTenantSetting ? (
+            <div className="tenant-edit-row">
+              <input
+                className="tenant-input"
+                placeholder="输入新的租户 ID..."
+                value={customTenantInput}
+                onChange={function (e) { setCustomTenantInput(e.target.value); }}
+                onKeyDown={function (e) {
+                  if (e.key === 'Enter') {
+                    var val = customTenantInput.trim();
+                    if (val) {
+                      setTenantId(val);
+                      setCustomTenantInput('');
+                      setShowTenantSetting(false);
+                      loadTasks();
+                      refreshCounts();
+                      showToast('租户已切换', 'success');
+                    }
+                  }
+                }}
+              />
+              <button
+                className="tenant-apply-btn"
+                onClick={function () {
+                  var val = customTenantInput.trim();
+                  if (!val) return;
+                  setTenantId(val);
+                  setCustomTenantInput('');
+                  setShowTenantSetting(false);
+                  loadTasks();
+                  refreshCounts();
+                  showToast('租户已切换', 'success');
+                }}
+              >
+                切换
+              </button>
+              <button className="tenant-cancel-btn" onClick={function () { setShowTenantSetting(false); setCustomTenantInput(''); }}>✕</button>
+            </div>
+          ) : (
+            <button className="tenant-change-btn" onClick={function () { setShowTenantSetting(true); }}>
+              更换租户
+            </button>
+          )}
+        </div>
+
         <div className="task-sidebar-footer">
           <div className="ai-menu-title">🤖 AI 工具</div>
           <button className="ai-menu-btn" onClick={function () { runAI(getDailyBrief); }} disabled={aiLoading}>🌅 每日简报</button>

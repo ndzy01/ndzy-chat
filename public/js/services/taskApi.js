@@ -8,6 +8,10 @@ function getTenantId() {
   return id;
 }
 
+function setTenantId(id) {
+  localStorage.setItem('ndzy_tenant_id', id);
+}
+
 function authHeaders() {
   return { 'X-Tenant-Id': getTenantId(), 'Content-Type': 'application/json' };
 }

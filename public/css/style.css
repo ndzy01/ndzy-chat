@@ -703,6 +703,107 @@ body {
   color: #6b7280;
 }
 
+/* Tenant Section */
+.tenant-section {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tenant-id-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tenant-id-code {
+  flex: 1;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'SF Mono', Monaco, Menlo, monospace;
+}
+
+.tenant-copy-btn {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #f9fafb;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  color: #374151;
+}
+
+.tenant-copy-btn:hover {
+  background: #e5e7eb;
+}
+
+.tenant-change-btn {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #6b7280;
+}
+
+.tenant-change-btn:hover {
+  background: #e5e7eb;
+}
+
+.tenant-edit-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.tenant-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #0084ff;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'SF Mono', Monaco, Menlo, monospace;
+}
+
+.tenant-apply-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background: #0084ff;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tenant-cancel-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tenant-cancel-btn:hover {
+  background: rgba(0,0,0,0.06);
+}
+
 .task-sidebar-footer {
   margin-top: auto;
   padding: 16px;
