@@ -35,15 +35,17 @@
 
     <!-- ============ API 服务层 ============ -->
     <script src="/js/services/chatApi.js"></script>
+    <script src="/js/services/taskApi.js"></script>
 
     <!-- ============ React 组件 ============ -->
     <script type="text/babel" src="/js/components/MessageBubble.jsx"></script>
     <script type="text/babel" src="/js/components/ChatApp.jsx"></script>
+    <script type="text/babel" src="/js/components/TaskBoard.jsx"></script>
 
     <!-- ============ 应用入口 ============ -->
     <script type="text/babel">
       const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<ChatApp />);
+      root.render(<TaskBoard />);
     </script>
   </body>
 </html>

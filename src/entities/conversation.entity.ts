@@ -19,6 +19,9 @@ export class Conversation {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ nullable: true })
+  tenantId: string;
+
   @DeleteDateColumn()
   deletedAt: Date | null;
 

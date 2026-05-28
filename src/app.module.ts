@@ -1,12 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConversationController } from './conversation.controller';
+import { TaskController } from './task.controller';
+import { TaskService } from './task.service';
+import { TenantMiddleware } from './tenant.middleware';
 import { Conversation } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
+import { Task } from './entities/task.entity';
+import { Subtask } from './entities/subtask.entity';
 
 @Module({
   imports: [
@@ -21,12 +26,16 @@ import { Message } from './entities/message.entity';
       password: 'npg_wXFEzyiYD7R2',
       database: 'neondb',
       ssl: true,
-      entities: [Conversation, Message],
+      entities: [Conversation, Message, Task, Subtask],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Conversation, Message]),
+    TypeOrmModule.forFeature([Conversation, Message, Task, Subtask]),
   ],
-  controllers: [AppController, ConversationController],
-  providers: [AppService],
+  controllers: [AppController, ConversationController, TaskController],
+  providers: [AppService, TaskService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TenantMiddleware).forRoutes('*');
+  }
+}

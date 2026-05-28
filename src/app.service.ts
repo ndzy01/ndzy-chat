@@ -16,7 +16,7 @@ export class AppService {
     private messageRepo: Repository<Message>,
   ) {
     this.client = new OpenAI({
-      apiKey: 'sk-1692361591704ac8903c92ebc0659810',
+      apiKey: 'xxx',
       baseURL: 'https://api.deepseek.com',
     });
   }

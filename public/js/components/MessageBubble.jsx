@@ -23,7 +23,7 @@ window.MessageBubble = function MessageBubble(props) {
           className="btn btn-sm btn-outline-danger delete-btn"
           onClick={function () { onDelete(index); }}
         >
-          Delete
+          删除
         </button>
       </div>
     </div>

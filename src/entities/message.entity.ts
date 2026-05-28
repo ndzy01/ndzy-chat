@@ -16,6 +16,9 @@ export class Message {
   @Column()
   role: string;
 
+  @Column({ nullable: true })
+  tenantId: string;
+
   @Column('text')
   content: string;
 

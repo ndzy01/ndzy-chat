@@ -19,7 +19,6 @@ window.ChatApp = function ChatApp() {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [transitioning, setTransitioning] = useState(false);
-  const [deletingMessageIndex, setDeletingMessageIndex] = useState(null);
   const [conversationsLoading, setConversationsLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -32,12 +31,11 @@ window.ChatApp = function ChatApp() {
     try {
       var list = await getConversations();
       setConversations(list);
-      // 如果未激活任何会话但有会话列表，自动选第一个
       if (!activeId && list.length > 0) {
         selectConversation(list[0].id);
       }
     } catch (err) {
-      console.error('Failed to load conversations:', err);
+      console.error('加载会话列表失败:', err);
     } finally {
       setConversationsLoading(false);
     }
@@ -67,7 +65,6 @@ window.ChatApp = function ChatApp() {
     setActiveId(id);
     try {
       var conv = await getConversation(id);
-      // 短暂延迟让过渡动画可见
       await new Promise(function (r) { setTimeout(r, 150); });
       if (conv && conv.messages) {
         setMessages(
@@ -79,7 +76,7 @@ window.ChatApp = function ChatApp() {
         setMessages([]);
       }
     } catch (err) {
-      console.error('Failed to load conversation:', err);
+      console.error('加载会话失败:', err);
       setMessages([]);
     } finally {
       setTransitioning(false);
@@ -91,7 +88,6 @@ window.ChatApp = function ChatApp() {
   function startEdit(conv) {
     setEditingId(conv.id);
     setEditTitle(conv.title);
-    // 等 DOM 更新后 focus
     setTimeout(function () {
       if (editInputRef.current) {
         editInputRef.current.focus();
@@ -102,7 +98,7 @@ window.ChatApp = function ChatApp() {
 
   // 保存标题
   async function saveTitle(id) {
-    var title = editTitle.trim() || 'New Conversation';
+    var title = editTitle.trim() || '新建会话';
     setActionLoading(true);
     try {
       await updateConversationTitle(id, title);
@@ -115,7 +111,7 @@ window.ChatApp = function ChatApp() {
         });
       });
     } catch (err) {
-      showToast('Failed to update title', 'danger');
+      showToast('修改标题失败', 'danger');
     } finally {
       setEditingId(null);
       setActionLoading(false);
@@ -142,14 +138,14 @@ window.ChatApp = function ChatApp() {
   async function handleNewConversation() {
     setActionLoading(true);
     try {
-      var conv = await createConversation('New Conversation');
+      var conv = await createConversation('新建会话');
       setConversations(function (prev) {
         return [conv].concat(prev);
       });
       setActiveId(conv.id);
       setMessages([]);
     } catch (err) {
-      showToast('Failed to create conversation', 'danger');
+      showToast('创建会话失败', 'danger');
     } finally {
       setActionLoading(false);
     }
@@ -157,7 +153,7 @@ window.ChatApp = function ChatApp() {
 
   // 删除会话
   async function handleDeleteConversation(id) {
-    if (!confirm('Delete this conversation?')) return;
+    if (!confirm('确定删除此会话？')) return;
     setActionLoading(true);
     try {
       await deleteConversation(id);
@@ -171,7 +167,7 @@ window.ChatApp = function ChatApp() {
         setMessages([]);
       }
     } catch (err) {
-      showToast('Failed to delete conversation', 'danger');
+      showToast('删除会话失败', 'danger');
     } finally {
       setActionLoading(false);
     }
@@ -180,13 +176,12 @@ window.ChatApp = function ChatApp() {
   // 发送消息
   async function handleSend() {
     if (!activeId) {
-      showToast('Please create or select a conversation first', 'warning');
+      showToast('请先选择或创建一个会话', 'warning');
       return;
     }
 
     var updatedMessages = messages;
 
-    // 有输入内容则先添加，固定 role 为 user
     if (messageInput.trim()) {
       var newMsg = {
         role: 'user',
@@ -198,7 +193,7 @@ window.ChatApp = function ChatApp() {
     }
 
     if (updatedMessages.length === 0) {
-      showToast('Please enter a message', 'danger');
+      showToast('请输入消息内容', 'danger');
       return;
     }
 
@@ -212,9 +207,9 @@ window.ChatApp = function ChatApp() {
           ]);
         });
       }
-      showToast('Response received!', 'success');
+      showToast('回复已收到！', 'success');
     } catch (err) {
-      showToast('Error: ' + err.message, 'danger');
+      showToast('发送失败: ' + err.message, 'danger');
     } finally {
       setLoading(false);
     }
@@ -228,14 +223,14 @@ window.ChatApp = function ChatApp() {
     }
   }
 
-  // 删除消息（仅前端移除，后端通过会话重载刷新）
+  // 删除消息
   function handleDeleteMessage(index) {
     setMessages(function (prev) {
       return prev.filter(function (_, i) {
         return i !== index;
       });
     });
-    showToast('Message deleted', 'info');
+    showToast('消息已删除', 'info');
   }
 
   // 格式化时间
@@ -254,19 +249,19 @@ window.ChatApp = function ChatApp() {
       <div className="sidebar">
         <div className="sidebar-header">
           <button className="new-conv-btn" onClick={handleNewConversation} disabled={actionLoading}>
-            {actionLoading ? 'Creating...' : '+ New Conversation'}
+            {actionLoading ? '创建中...' : '+ 新建会话'}
           </button>
         </div>
         <div className="conversation-list">
           {conversationsLoading ? (
             <div className="sidebar-loading">
               <div className="spinner-border text-primary spinner-border-sm" role="status">
-                <span className="visually-hidden">Loading...</span>
+                <span className="visually-hidden">加载中...</span>
               </div>
-              <span className="ms-2">Loading...</span>
+              <span className="ms-2">加载中...</span>
             </div>
           ) : conversations.length === 0 ? (
-            <div className="no-conversations">No conversations yet</div>
+            <div className="no-conversations">暂无会话</div>
           ) : (
             conversations.map(function (conv) {
               return (
@@ -302,7 +297,7 @@ window.ChatApp = function ChatApp() {
                         e.stopPropagation();
                         startEdit(conv);
                       }}
-                      title="Double click to rename"
+                      title="双击重命名"
                     >
                       {conv.title}
                     </div>
@@ -316,7 +311,7 @@ window.ChatApp = function ChatApp() {
                       e.stopPropagation();
                       handleDeleteConversation(conv.id);
                     }}
-                    title="Delete conversation"
+                    title="删除会话"
                     disabled={actionLoading}
                   >
                     {actionLoading ? '⏳' : '🗑'}
@@ -333,7 +328,7 @@ window.ChatApp = function ChatApp() {
         <ChatHeader
           title={
             activeId
-              ? (conversations.find(function (c) { return c.id === activeId; }) || {}).title || 'New Conversation'
+              ? (conversations.find(function (c) { return c.id === activeId; }) || {}).title || '新建会话'
               : 'NDZY Chat'
           }
         />
@@ -345,17 +340,17 @@ window.ChatApp = function ChatApp() {
               {messagesLoading ? (
                 <div className="messages-loading">
                   <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                    <span className="visually-hidden">加载中...</span>
                   </div>
-                  <p className="mt-2 text-muted">Loading messages...</p>
+                  <p className="mt-2 text-muted">加载消息中...</p>
                 </div>
               ) : !activeId ? (
                 <div className="text-center text-muted py-5">
-                  Create a new conversation or select one to start chatting
+                  新建一个会话或选择一个已有会话开始聊天
                 </div>
               ) : messages.length === 0 ? (
                 <div className="text-center text-muted py-5">
-                  No messages yet. Type something to start!
+                  暂无消息，请输入内容开始对话！
                 </div>
               ) : (
                 messages.map(function (msg, index) {
@@ -374,7 +369,6 @@ window.ChatApp = function ChatApp() {
 
           {/* 输入区域 */}
           <div className="input-section">
-            {/* 文本输入 */}
             <div className="input-wrapper">
               <textarea
                 value={messageInput}
@@ -384,8 +378,8 @@ window.ChatApp = function ChatApp() {
                 onKeyDown={handleKeyDown}
                 placeholder={
                   activeId
-                    ? 'Enter your message (Ctrl+Enter to send)...'
-                    : 'Select a conversation first...'
+                    ? '输入消息（Ctrl+Enter 发送）...'
+                    : '请先选择会话...'
                 }
                 disabled={loading || !activeId}
               ></textarea>
@@ -405,10 +399,10 @@ window.ChatApp = function ChatApp() {
                       role="status"
                       aria-hidden="true"
                     ></span>
-                    Sending...
+                    发送中...
                   </span>
                 ) : (
-                  'Send'
+                  '发送'
                 )}
               </button>
             </div>
