@@ -11,8 +11,9 @@ export class AppController {
     @Body()
     body: {
       messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
+      conversationId?: string;
     },
-  ): Promise<string | null> {
-    return this.appService.chat(body.messages);
+  ): Promise<{ content: string | null; conversationId: string }> {
+    return this.appService.chat(body.messages, body.conversationId);
   }
 }
