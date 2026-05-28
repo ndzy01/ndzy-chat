@@ -1,34 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, LessThan } from 'typeorm';
-import OpenAI from 'openai';
 import { Task, TaskStatus, TaskPriority } from './entities/task.entity';
 import { Subtask } from './entities/subtask.entity';
+import { AiService } from './ai/ai.service';
 
 @Injectable()
 export class TaskService {
-  private client: OpenAI;
-
   constructor(
     @InjectRepository(Task)
     private taskRepo: Repository<Task>,
     @InjectRepository(Subtask)
     private subtaskRepo: Repository<Subtask>,
-  ) {
-    this.client = new OpenAI({
-      apiKey: process.env.API_KEY,
-      baseURL: 'https://api.deepseek.com',
-    });
-  }
-
-  private async askAI(prompt: string): Promise<string> {
-    const response = await this.client.chat.completions.create({
-      model: 'deepseek-v4-pro',
-      messages: [{ role: 'user', content: prompt }],
-      reasoning_effort: 'high',
-    });
-    return response.choices[0].message.content || '';
-  }
+    private readonly ai: AiService,
+  ) {}
 
   // ========== CRUD ==========
 
@@ -79,7 +64,7 @@ export class TaskService {
 优先级：${task.priority}
 截止日期：${task.dueDate || '无'}`;
 
-    const result = await this.askAI(prompt);
+    const result = await this.ai.ask(prompt);
     const lines = result
       .split('\n')
       .filter((l: string) => l.trim().startsWith('-'))
@@ -112,7 +97,7 @@ export class TaskService {
 
 ${listText}`;
 
-    return this.askAI(prompt);
+    return this.ai.ask(prompt);
   }
 
   // ========== AI 3: 自然语言解析 ==========
@@ -128,7 +113,7 @@ ${listText}`;
 
 用户输入：${text}`;
 
-    const result = await this.askAI(prompt);
+    const result = await this.ai.ask(prompt);
     let parsed;
     try {
       const cleaned = result.replace(/```json|```/g, '').trim();
@@ -157,7 +142,7 @@ ${listText}`;
 
 ${listText || '今天没有待办任务'}`;
 
-    return this.askAI(prompt);
+    return this.ai.ask(prompt);
   }
 
   // ========== AI 5: 智能搜索 ==========
@@ -180,7 +165,7 @@ ${listText || '今天没有待办任务'}`;
 搜索结果：
 ${listText}`;
 
-    return this.askAI(prompt);
+    return this.ai.ask(prompt);
   }
 
   // ========== AI 6: 脑暴转任务 ==========
@@ -195,7 +180,7 @@ ${listText}`;
 
 用户输入：${text}`;
 
-    const result = await this.askAI(prompt);
+    const result = await this.ai.ask(prompt);
     let items: any[];
     try {
       const cleaned = result.replace(/```json|```/g, '').trim();
@@ -223,10 +208,10 @@ ${listText}`;
 
 ${listText}`;
 
-    return this.askAI(prompt);
+    return this.ai.ask(prompt);
   }
 
-  // ========== AI 8: 智能推荐 ==========
+  // ========== Subtask + AI 8: 智能推荐 ==========
 
   async toggleSubtask(id: string): Promise<Subtask> {
     const subtask = await this.subtaskRepo.findOne({ where: { id } as any });
@@ -253,7 +238,6 @@ ${listText}`;
 
 ${listText || '暂无任务'}`;
 
-    return this.askAI(prompt);
+    return this.ai.ask(prompt);
   }
 }
-

@@ -12,9 +12,13 @@ import { Conversation } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
 import { Task } from './entities/task.entity';
 import { Subtask } from './entities/subtask.entity';
+import { AiModule } from './ai/ai.module';
+import { DemoModule } from './demo/demo.module';
 
 @Module({
   imports: [
+    AiModule,
+    DemoModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
@@ -25,9 +29,12 @@ import { Subtask } from './entities/subtask.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      ssl: process.env.DB_SSL === 'true',
       entities: [Conversation, Message, Task, Subtask],
       synchronize: true,
+      extra: {
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+      },
+      invalidWhereValuesBehavior: { null: 'ignore', undefined: 'ignore' },
     }),
     TypeOrmModule.forFeature([Conversation, Message, Task, Subtask]),
   ],
